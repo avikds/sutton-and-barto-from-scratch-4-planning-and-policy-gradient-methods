@@ -485,8 +485,53 @@ def corridor_true_value(p_right):
 
     return float(value)
 
-# Step 16 - reinforce_episode (not yet solved)
-# TODO: implement
+# Step 16 - reinforce_episode
+def reinforce_episode(theta, alpha, gamma, rng, max_steps=10000):
+    # Copy the preferences so the input array remains unchanged.
+    theta = theta.copy()
+
+    # Generate one episode, storing the actions and rewards.
+    state = 0
+    actions = []
+    rewards = []
+    done = False
+
+    while not done and len(actions) < max_steps:
+        # Sample an action from the current softmax policy.
+        probs = corridor_policy(theta)
+        action = int(rng.choice(2, p=probs))
+
+        # Take one transition in the short corridor.
+        next_state, reward, done = corridor_step(state, action)
+
+        actions.append(action)
+        rewards.append(reward)
+        state = next_state
+
+    # Compute Monte Carlo returns using a backward pass.
+    returns = [0.0] * len(rewards)
+    G = 0.0
+
+    for t in range(len(rewards) - 1, -1, -1):
+        G = rewards[t] + gamma * G
+        returns[t] = G
+
+    # Apply REINFORCE updates in chronological order.
+    # Recompute the policy after each update using the current preferences.
+    for t, (action, G_t) in enumerate(zip(actions, returns)):
+        probs = corridor_policy(theta)
+
+        # Score function: one-hot(action) - policy probabilities.
+        grad = np.zeros(2, dtype=float)
+        grad[action] = 1.0
+        grad -= probs
+
+        # Apply the gamma^t-weighted policy-gradient update.
+        theta += alpha * (gamma ** t) * G_t * grad
+
+    # Return the updated preferences and undiscounted episode reward.
+    total_reward = float(sum(rewards))
+    return theta, total_reward
 
 # Step 17 - reinforce_baseline_episode (not yet solved)
 # TODO: implement
