@@ -26,7 +26,7 @@ python scaffold.py
 - [x] **14.** corridor_policy
 - [x] **15.** corridor_true_value
 - [x] **16.** reinforce_episode
-- [ ] **17.** reinforce_baseline_episode
+- [x] **17.** reinforce_baseline_episode
 - [ ] **18.** actor_critic_corridor_episode
 - [ ] **19.** access_control_step
 - [ ] **20.** differential_sarsa_update

@@ -533,8 +533,60 @@ def reinforce_episode(theta, alpha, gamma, rng, max_steps=10000):
     total_reward = float(sum(rewards))
     return theta, total_reward
 
-# Step 17 - reinforce_baseline_episode (not yet solved)
-# TODO: implement
+# Step 17 - reinforce_baseline_episode
+def reinforce_baseline_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_steps=10000):
+    # Copy the policy preferences so the input array remains unchanged.
+    theta = theta.copy()
+    w = float(w)
+
+    # Generate one episode, storing actions and rewards.
+    state = 0
+    actions = []
+    rewards = []
+    done = False
+
+    while not done and len(actions) < max_steps:
+        # Sample an action from the current softmax policy.
+        probs = corridor_policy(theta)
+        action = int(rng.choice(2, p=probs))
+
+        # Execute one transition in the short corridor.
+        next_state, reward, done = corridor_step(state, action)
+
+        actions.append(action)
+        rewards.append(reward)
+        state = next_state
+
+    # Compute Monte Carlo returns using a backward pass.
+    returns = [0.0] * len(rewards)
+    G = 0.0
+
+    for t in range(len(rewards) - 1, -1, -1):
+        G = rewards[t] + gamma * G
+        returns[t] = G
+
+    # Update the baseline and policy in chronological order.
+    for t, (action, G_t) in enumerate(zip(actions, returns)):
+        # Compute the advantage using the current baseline estimate.
+        delta = G_t - w
+
+        # Update the state-value baseline.
+        w += alpha_w * delta
+
+        # Recompute action probabilities using the current preferences.
+        probs = corridor_policy(theta)
+
+        # Compute the policy score: one-hot(action) - probabilities.
+        grad = np.zeros(2, dtype=float)
+        grad[action] = 1.0
+        grad -= probs
+
+        # Apply the gamma^t-weighted policy-gradient update.
+        theta += alpha_theta * (gamma ** t) * delta * grad
+
+    # Return updated preferences, baseline, and undiscounted episode reward.
+    total_reward = float(sum(rewards))
+    return theta, float(w), total_reward
 
 # Step 18 - actor_critic_corridor_episode (not yet solved)
 # TODO: implement
