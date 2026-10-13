@@ -19,7 +19,7 @@ python scaffold.py
 - [x] **7.** greedy_path_length
 - [x] **8.** update_model_plus
 - [x] **9.** dyna_q_plus_planning
-- [ ] **10.** run_blocking_maze
+- [x] **10.** run_blocking_maze
 - [ ] **11.** push_priority
 - [ ] **12.** prioritized_sweeping_episode
 - [ ] **13.** corridor_step

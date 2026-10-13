@@ -261,8 +261,105 @@ def dyna_q_plus_planning(q_table, model, n_planning, time, kappa, alpha, gamma, 
 
     return updated_q_table
 
-# Step 10 - run_blocking_maze (not yet solved)
-# TODO: implement
+# Step 10 - run_blocking_maze
+def run_blocking_maze(use_plus, max_steps, change_step, n_planning, kappa, alpha, gamma, epsilon, rng):
+    # Build the initial 6x9 maze with a wall that blocks row 3
+    # except at column 8.
+    maze = build_maze(
+        walls=[(3, c) for c in range(8)],
+        start=(5, 3),
+        goal=(0, 8),
+        rows=6,
+        cols=9,
+    )
+
+    # Initialize the action-value table, learned model, and agent state.
+    q_table = np.zeros((6, 9, 4))
+    model = {}
+    state = maze['start']
+
+    # Store cumulative rewards after every real environment step.
+    cumulative = np.zeros(max_steps, dtype=float)
+    total_reward = 0.0
+
+    for t in range(1, max_steps + 1):
+        # Change the wall after the first change_step steps.
+        # Keep the current state, Q-table, and learned model unchanged.
+        if t == change_step + 1:
+            maze = build_maze(
+                walls=[(3, c) for c in range(1, 9)],
+                start=(5, 3),
+                goal=(0, 8),
+                rows=6,
+                cols=9,
+            )
+
+        # Select an action using epsilon-greedy exploration.
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+
+        # Execute one real transition in the current maze.
+        next_state, reward, done = maze_step(maze, state, action)
+
+        # Update the Q-table using the real experience.
+        q_table = q_learning_update(
+            q_table,
+            state,
+            action,
+            reward,
+            next_state,
+            alpha,
+            gamma,
+        )
+
+        if use_plus:
+            # Record the transition, initialize untried actions,
+            # and timestamp the observed state-action pair.
+            model = update_model_plus(
+                model,
+                state,
+                action,
+                next_state,
+                reward,
+                t,
+                4,
+            )
+
+            # Perform Dyna-Q+ planning with the exploration bonus.
+            q_table = dyna_q_plus_planning(
+                q_table,
+                model,
+                n_planning,
+                t,
+                kappa,
+                alpha,
+                gamma,
+                rng,
+            )
+        else:
+            # Learn the deterministic model from real experience.
+            model[(state, action)] = (next_state, reward)
+
+            # Perform ordinary Dyna-Q planning without an exploration bonus.
+            q_table = planning_updates(
+                q_table,
+                model,
+                n_planning,
+                alpha,
+                gamma,
+                rng,
+            )
+
+        # Accumulate rewards and record the cumulative reward curve.
+        total_reward += reward
+        cumulative[t - 1] = total_reward
+
+        # Reset to the start after reaching the goal; otherwise continue.
+        if done:
+            state = maze['start']
+        else:
+            state = next_state
+
+    return cumulative
 
 # Step 11 - push_priority (not yet solved)
 # TODO: implement
