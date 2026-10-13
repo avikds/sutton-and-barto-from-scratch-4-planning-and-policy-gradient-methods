@@ -91,8 +91,25 @@ def epsilon_greedy_tabular(q_table, state, epsilon, rng):
     # Break ties uniformly at random among the greedy actions.
     return int(rng.choice(candidates))
 
-# Step 4 - q_learning_update (not yet solved)
-# TODO: implement
+# Step 4 - q_learning_update
+def q_learning_update(q_table, state, action, reward, next_state, alpha, gamma):
+    # Create a copy so the original Q-table remains unchanged.
+    updated_q_table = q_table.copy()
+
+    # Get the current action-value estimate Q(s, a).
+    current_value = q_table[state][action]
+
+    # Compute the Q-learning target:
+    # reward + gamma * max_a Q(next_state, a)
+    target = reward + gamma * max(q_table[next_state])
+
+    # Apply the tabular Q-learning update.
+    updated_q_table[state][action] = (
+        current_value + alpha * (target - current_value)
+    )
+
+    # Return the updated copy of the Q-table.
+    return updated_q_table
 
 # Step 5 - planning_updates (not yet solved)
 # TODO: implement
