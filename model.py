@@ -381,8 +381,68 @@ def push_priority(queue, q_table, state, action, reward, next_state, gamma, thet
     # Return the same queue object.
     return queue
 
-# Step 12 - prioritized_sweeping_episode (not yet solved)
-# TODO: implement
+# Step 12 - prioritized_sweeping_episode
+def prioritized_sweeping_episode(maze, q_table, model, n_planning, theta, alpha, gamma, epsilon, rng):
+    # Copy the model so the caller's dictionary is not mutated.
+    model = model.copy()
+
+    # Initialize the priority queue and episode counters.
+    queue = []
+    state = maze['start']
+    done = False
+    n_steps = 0
+    n_updates = 0
+
+    # Continue until the agent reaches the goal.
+    while not done:
+        # Select an action using epsilon-greedy exploration.
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+
+        # Execute the action in the real maze.
+        next_state, reward, done = maze_step(maze, state, action)
+
+        # Store the observed transition in the deterministic model.
+        model[(state, action)] = (next_state, reward)
+
+        # Queue the real transition according to its update magnitude.
+        push_priority(
+            queue, q_table, state, action,
+            reward, next_state, gamma, theta
+        )
+
+        # Perform up to n_planning prioritized backups.
+        for _ in range(n_planning):
+            # Stop planning if the queue is empty.
+            if not queue:
+                break
+
+            # Pop the transition with the largest priority.
+            _, s, a = heapq.heappop(queue)
+
+            # Retrieve the transition from the learned model.
+            s_next, r = model[(s, a)]
+
+            # Apply one Q-learning backup and count the update.
+            q_table = q_learning_update(
+                q_table, s, a, r, s_next, alpha, gamma
+            )
+            n_updates += 1
+
+            # Find predecessor transitions leading into state s.
+            # Reprioritize them because the value of s may have changed.
+            for (ps, pa), (pn, pr) in model.items():
+                if pn == s:
+                    push_priority(
+                        queue, q_table, ps, pa,
+                        pr, s, gamma, theta
+                    )
+
+        # Advance the real agent and count its environment step.
+        state = next_state
+        n_steps += 1
+
+    # Return the learned Q-table, copied model, real steps, and planning updates.
+    return q_table, model, n_steps, n_updates
 
 # Step 13 - corridor_step (not yet solved)
 # TODO: implement

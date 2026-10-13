@@ -21,7 +21,7 @@ python scaffold.py
 - [x] **9.** dyna_q_plus_planning
 - [x] **10.** run_blocking_maze
 - [x] **11.** push_priority
-- [ ] **12.** prioritized_sweeping_episode
+- [x] **12.** prioritized_sweeping_episode
 - [ ] **13.** corridor_step
 - [ ] **14.** corridor_policy
 - [ ] **15.** corridor_true_value
