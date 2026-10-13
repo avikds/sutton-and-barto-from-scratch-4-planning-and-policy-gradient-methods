@@ -224,8 +224,42 @@ def update_model_plus(model, state, action, next_state, reward, time, n_actions=
 
     return updated_model
 
-# Step 9 - dyna_q_plus_planning (not yet solved)
-# TODO: implement
+# Step 9 - dyna_q_plus_planning
+def dyna_q_plus_planning(q_table, model, n_planning, time, kappa, alpha, gamma, rng):
+    # Return an unchanged copy if the model is empty or no planning is requested.
+    if not model or n_planning <= 0:
+        return q_table.copy()
+
+    # Preserve the insertion order of the model entries.
+    keys = list(model.keys())
+
+    # Sample all planning indices in a single RNG call.
+    indices = rng.integers(0, len(keys), size=n_planning)
+
+    # Work on a copy so the input Q-table is never mutated.
+    updated_q_table = q_table.copy()
+
+    # Perform simulated Q-learning backups with the Dyna-Q+ exploration bonus.
+    for index in indices:
+        state, action = keys[int(index)]
+        next_state, reward, last_time = model[(state, action)]
+
+        # Encourage exploration of state-action pairs not visited recently.
+        bonus = kappa * np.sqrt(time - last_time)
+        augmented_reward = reward + bonus
+
+        # Update the Q-value using the augmented reward.
+        updated_q_table = q_learning_update(
+            updated_q_table,
+            state,
+            action,
+            augmented_reward,
+            next_state,
+            alpha,
+            gamma,
+        )
+
+    return updated_q_table
 
 # Step 10 - run_blocking_maze (not yet solved)
 # TODO: implement

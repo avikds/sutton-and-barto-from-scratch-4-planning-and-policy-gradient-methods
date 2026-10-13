@@ -18,7 +18,7 @@ python scaffold.py
 - [x] **6.** dyna_q_episode
 - [x] **7.** greedy_path_length
 - [x] **8.** update_model_plus
-- [ ] **9.** dyna_q_plus_planning
+- [x] **9.** dyna_q_plus_planning
 - [ ] **10.** run_blocking_maze
 - [ ] **11.** push_priority
 - [ ] **12.** prioritized_sweeping_episode
