@@ -464,8 +464,18 @@ def corridor_step(state, action):
 
     return next_state, reward, done
 
-# Step 14 - corridor_policy (not yet solved)
-# TODO: implement
+# Step 14 - corridor_policy
+def corridor_policy(theta):
+    # Subtract the maximum preference for numerical stability.
+    shifted_theta = theta - np.max(theta)
+
+    # Compute the exponentials of the shifted preferences.
+    exp_theta = np.exp(shifted_theta)
+
+    # Normalize the exponentials to obtain softmax action probabilities.
+    probs = exp_theta / np.sum(exp_theta)
+
+    return probs.astype(float)
 
 # Step 15 - corridor_true_value (not yet solved)
 # TODO: implement

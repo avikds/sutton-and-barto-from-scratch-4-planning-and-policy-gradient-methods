@@ -23,7 +23,7 @@ python scaffold.py
 - [x] **11.** push_priority
 - [x] **12.** prioritized_sweeping_episode
 - [x] **13.** corridor_step
-- [ ] **14.** corridor_policy
+- [x] **14.** corridor_policy
 - [ ] **15.** corridor_true_value
 - [ ] **16.** reinforce_episode
 - [ ] **17.** reinforce_baseline_episode
