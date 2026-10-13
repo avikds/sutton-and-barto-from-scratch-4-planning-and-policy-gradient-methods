@@ -69,8 +69,27 @@ def maze_step(maze, state, action):
     # Return the next state, reward, and terminal status.
     return next_state, reward, done
 
-# Step 3 - epsilon_greedy_tabular (not yet solved)
-# TODO: implement
+# Step 3 - epsilon_greedy_tabular
+import numpy as np
+
+def epsilon_greedy_tabular(q_table, state, epsilon, rng):
+    # Get the action-value estimates for the given state.
+    action_values = q_table[state]
+    n_actions = len(action_values)
+
+    # Draw a random number to decide whether to explore or exploit.
+    u = rng.random()
+
+    if u < epsilon:
+        # Exploration: choose an action uniformly at random.
+        return int(rng.integers(0, n_actions))
+
+    # Exploitation: identify all actions with the maximum Q-value.
+    max_value = np.max(action_values)
+    candidates = np.flatnonzero(action_values == max_value)
+
+    # Break ties uniformly at random among the greedy actions.
+    return int(rng.choice(candidates))
 
 # Step 4 - q_learning_update (not yet solved)
 # TODO: implement

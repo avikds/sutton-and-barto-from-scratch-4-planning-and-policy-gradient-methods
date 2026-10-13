@@ -12,7 +12,7 @@ python scaffold.py
 
 - [x] **1.** build_maze
 - [x] **2.** maze_step
-- [ ] **3.** epsilon_greedy_tabular
+- [x] **3.** epsilon_greedy_tabular
 - [ ] **4.** q_learning_update
 - [ ] **5.** planning_updates
 - [ ] **6.** dyna_q_episode
