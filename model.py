@@ -477,8 +477,13 @@ def corridor_policy(theta):
 
     return probs.astype(float)
 
-# Step 15 - corridor_true_value (not yet solved)
-# TODO: implement
+# Step 15 - corridor_true_value
+def corridor_true_value(p_right):
+    # Compute the exact start-state value using the closed-form solution
+    # for Sutton and Barto's short corridor (Example 13.1).
+    value = -2.0 * (2.0 - p_right) / (p_right * (1.0 - p_right))
+
+    return float(value)
 
 # Step 16 - reinforce_episode (not yet solved)
 # TODO: implement

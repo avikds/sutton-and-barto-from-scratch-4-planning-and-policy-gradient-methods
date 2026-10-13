@@ -24,7 +24,7 @@ python scaffold.py
 - [x] **12.** prioritized_sweeping_episode
 - [x] **13.** corridor_step
 - [x] **14.** corridor_policy
-- [ ] **15.** corridor_true_value
+- [x] **15.** corridor_true_value
 - [ ] **16.** reinforce_episode
 - [ ] **17.** reinforce_baseline_episode
 - [ ] **18.** actor_critic_corridor_episode
