@@ -182,8 +182,29 @@ def dyna_q_episode(maze, q_table, model, n_planning, alpha, gamma, epsilon, rng)
     # Return the updated Q-table, copied model, and real episode length.
     return q_table, model, n_steps
 
-# Step 7 - greedy_path_length (not yet solved)
-# TODO: implement
+# Step 7 - greedy_path_length
+def greedy_path_length(maze, q_table, max_steps=100):
+    # Start at the maze's initial position.
+    state = maze['start']
+
+    # Follow the greedy policy for at most max_steps moves.
+    for step in range(max_steps):
+        # Select the action with the highest Q-value.
+        # np.argmax chooses the smallest action index when values are tied.
+        action = int(np.argmax(q_table[state]))
+
+        # Execute the selected action in the maze.
+        next_state, reward, done = maze_step(maze, state, action)
+
+        # Return the number of moves taken if the goal is reached.
+        if done:
+            return step + 1
+
+        # Update the current state.
+        state = next_state
+
+    # Return max_steps if the goal was not reached within the limit.
+    return max_steps
 
 # Step 8 - update_model_plus (not yet solved)
 # TODO: implement
