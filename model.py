@@ -361,8 +361,25 @@ def run_blocking_maze(use_plus, max_steps, change_step, n_planning, kappa, alpha
 
     return cumulative
 
-# Step 11 - push_priority (not yet solved)
-# TODO: implement
+# Step 11 - push_priority
+import heapq
+
+def push_priority(queue, q_table, state, action, reward, next_state, gamma, theta):
+    # Compute the Q-learning target for the observed transition.
+    target = reward + gamma * max(q_table[next_state])
+
+    # Calculate the magnitude of the pending Q-value update.
+    priority = abs(target - q_table[state][action])
+
+    # Add the state-action pair only when its priority exceeds theta.
+    if priority > theta:
+        heapq.heappush(
+            queue,
+            (-float(priority), tuple(state), int(action))
+        )
+
+    # Return the same queue object.
+    return queue
 
 # Step 12 - prioritized_sweeping_episode (not yet solved)
 # TODO: implement

@@ -20,7 +20,7 @@ python scaffold.py
 - [x] **8.** update_model_plus
 - [x] **9.** dyna_q_plus_planning
 - [x] **10.** run_blocking_maze
-- [ ] **11.** push_priority
+- [x] **11.** push_priority
 - [ ] **12.** prioritized_sweeping_episode
 - [ ] **13.** corridor_step
 - [ ] **14.** corridor_policy
