@@ -689,8 +689,55 @@ def differential_sarsa_update(q_table, avg_reward, state, action, reward, next_s
     # Return the updated Q-table and average-reward estimate.
     return updated_q_table, float(avg_reward)
 
-# Step 21 - run_access_control (not yet solved)
-# TODO: implement
+# Step 21 - run_access_control
+def run_access_control(n_steps, alpha, beta, epsilon, rng, n_servers=10, free_prob=0.06):
+    # Initialize the action-value table and average-reward estimate.
+    q_table = np.zeros((n_servers + 1, 4, 2))
+    avg_reward = 0.0
+
+    # Initialize the state with all servers free and a random customer priority.
+    state = (n_servers, int(rng.integers(0, 4)))
+
+    # Reject customers whenever no server is available; otherwise use
+    # epsilon-greedy action selection.
+    if state[0] == 0:
+        action = 0
+    else:
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+
+    # Run differential semi-gradient Sarsa for n_steps decisions.
+    for _ in range(n_steps):
+        # Execute the current accept/reject decision.
+        next_state, reward = access_control_step(
+            state, action, rng, n_servers, free_prob
+        )
+
+        # Choose the next action using the same action-selection rule.
+        if next_state[0] == 0:
+            next_action = 0
+        else:
+            next_action = epsilon_greedy_tabular(
+                q_table, next_state, epsilon, rng
+            )
+
+        # Update the Q-table and average-reward estimate.
+        q_table, avg_reward = differential_sarsa_update(
+            q_table,
+            avg_reward,
+            state,
+            action,
+            reward,
+            next_state,
+            next_action,
+            alpha,
+            beta,
+        )
+
+        # Advance to the next state and action.
+        state = next_state
+        action = next_action
+
+    return q_table, float(avg_reward)
 
 # Step 22 - access_control_policy_table (not yet solved)
 # TODO: implement
