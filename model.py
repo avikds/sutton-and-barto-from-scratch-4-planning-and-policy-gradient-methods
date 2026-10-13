@@ -638,8 +638,34 @@ def actor_critic_corridor_episode(theta, w, alpha_theta, alpha_w, gamma, rng, ma
     # Return the updated actor, critic, and undiscounted episode reward.
     return theta, w, float(total_reward)
 
-# Step 19 - access_control_step (not yet solved)
-# TODO: implement
+# Step 19 - access_control_step
+def access_control_step(state, action, rng, n_servers=10, free_prob=0.06):
+    # Unpack the state: number of free servers and current customer priority.
+    free, prio = state
+    free = int(free)
+
+    # Customer priorities from Sutton and Barto's Example 10.2.
+    priorities = (1.0, 2.0, 4.0, 8.0)
+
+    # Accept the customer only if action is 1 and a server is available.
+    if action == 1 and free > 0:
+        reward = priorities[prio]
+        free -= 1
+    else:
+        # Rejecting the customer, or accepting with no free server,
+        # yields zero reward and does not occupy a server.
+        reward = 0.0
+
+    # Each busy server independently becomes free with probability free_prob.
+    busy_servers = n_servers - free
+    freed_servers = int(rng.binomial(busy_servers, free_prob))
+    free += freed_servers
+
+    # Draw the next customer's priority after updating server availability.
+    next_prio = int(rng.integers(0, 4))
+
+    # Return the new state with Python integers and a float reward.
+    return (int(free), next_prio), float(reward)
 
 # Step 20 - differential_sarsa_update (not yet solved)
 # TODO: implement
