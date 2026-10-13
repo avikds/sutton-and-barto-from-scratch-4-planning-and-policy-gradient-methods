@@ -667,8 +667,27 @@ def access_control_step(state, action, rng, n_servers=10, free_prob=0.06):
     # Return the new state with Python integers and a float reward.
     return (int(free), next_prio), float(reward)
 
-# Step 20 - differential_sarsa_update (not yet solved)
-# TODO: implement
+# Step 20 - differential_sarsa_update
+def differential_sarsa_update(q_table, avg_reward, state, action, reward, next_state, next_action, alpha, beta):
+    # Copy the Q-table so the input array remains unchanged.
+    updated_q_table = q_table.copy()
+
+    # Compute the differential TD error for the average-reward setting.
+    delta = (
+        reward
+        - avg_reward
+        + q_table[next_state][next_action]
+        - q_table[state][action]
+    )
+
+    # Update the average-reward estimate.
+    avg_reward = avg_reward + beta * delta
+
+    # Update the selected state-action value.
+    updated_q_table[state][action] += alpha * delta
+
+    # Return the updated Q-table and average-reward estimate.
+    return updated_q_table, float(avg_reward)
 
 # Step 21 - run_access_control (not yet solved)
 # TODO: implement

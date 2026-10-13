@@ -29,7 +29,7 @@ python scaffold.py
 - [x] **17.** reinforce_baseline_episode
 - [x] **18.** actor_critic_corridor_episode
 - [x] **19.** access_control_step
-- [ ] **20.** differential_sarsa_update
+- [x] **20.** differential_sarsa_update
 - [ ] **21.** run_access_control
 - [ ] **22.** access_control_policy_table
 
