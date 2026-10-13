@@ -14,7 +14,7 @@ python scaffold.py
 - [x] **2.** maze_step
 - [x] **3.** epsilon_greedy_tabular
 - [x] **4.** q_learning_update
-- [ ] **5.** planning_updates
+- [x] **5.** planning_updates
 - [ ] **6.** dyna_q_episode
 - [ ] **7.** greedy_path_length
 - [ ] **8.** update_model_plus

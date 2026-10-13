@@ -111,8 +111,38 @@ def q_learning_update(q_table, state, action, reward, next_state, alpha, gamma):
     # Return the updated copy of the Q-table.
     return updated_q_table
 
-# Step 5 - planning_updates (not yet solved)
-# TODO: implement
+# Step 5 - planning_updates
+def planning_updates(q_table, model, n_planning, alpha, gamma, rng):
+    # Return an unchanged copy if there are no modelled transitions
+    # or no planning updates are requested.
+    if not model or n_planning <= 0:
+        return q_table.copy()
+
+    # Preserve the model's insertion order when creating the key list.
+    keys = list(model.keys())
+
+    # Sample all planning indices in a single random-number-generator call.
+    indices = rng.integers(0, len(keys), size=n_planning)
+
+    # Work on a copy so the input Q-table is never mutated.
+    updated_q_table = q_table.copy()
+
+    # Perform simulated Q-learning updates using the learned model.
+    for index in indices:
+        state, action = keys[int(index)]
+        next_state, reward = model[(state, action)]
+
+        updated_q_table = q_learning_update(
+            updated_q_table,
+            state,
+            action,
+            reward,
+            next_state,
+            alpha,
+            gamma,
+        )
+
+    return updated_q_table
 
 # Step 6 - dyna_q_episode (not yet solved)
 # TODO: implement
