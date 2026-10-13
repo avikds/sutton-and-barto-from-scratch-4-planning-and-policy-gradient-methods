@@ -206,8 +206,23 @@ def greedy_path_length(maze, q_table, max_steps=100):
     # Return max_steps if the goal was not reached within the limit.
     return max_steps
 
-# Step 8 - update_model_plus (not yet solved)
-# TODO: implement
+# Step 8 - update_model_plus
+def update_model_plus(model, state, action, next_state, reward, time, n_actions=4):
+    # Copy the model so the input dictionary remains unchanged.
+    updated_model = model.copy()
+
+    # Add default transitions for actions not yet tried from this state.
+    # Each untried action leads back to the same state with zero reward
+    # and an initial last-visit time of 0.
+    for a in range(n_actions):
+        key = (state, a)
+        if key not in updated_model:
+            updated_model[key] = (state, 0.0, 0)
+
+    # Record the actual observed transition and its latest visit time.
+    updated_model[(state, action)] = (next_state, reward, int(time))
+
+    return updated_model
 
 # Step 9 - dyna_q_plus_planning (not yet solved)
 # TODO: implement
