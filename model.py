@@ -144,8 +144,43 @@ def planning_updates(q_table, model, n_planning, alpha, gamma, rng):
 
     return updated_q_table
 
-# Step 6 - dyna_q_episode (not yet solved)
-# TODO: implement
+# Step 6 - dyna_q_episode
+def dyna_q_episode(maze, q_table, model, n_planning, alpha, gamma, epsilon, rng):
+    # Copy the model so the caller's dictionary remains unchanged.
+    model = model.copy()
+
+    # Begin each episode at the maze's start position.
+    state = maze['start']
+    done = False
+    n_steps = 0
+
+    # Continue until the agent reaches the goal.
+    while not done:
+        # (a) Select an action using epsilon-greedy exploration.
+        action = epsilon_greedy_tabular(q_table, state, epsilon, rng)
+
+        # (b) Execute the action in the real environment.
+        next_state, reward, done = maze_step(maze, state, action)
+
+        # (c) Update the Q-table using the real experience.
+        q_table = q_learning_update(
+            q_table, state, action, reward, next_state, alpha, gamma
+        )
+
+        # (d) Learn the deterministic transition model from experience.
+        model[(state, action)] = (next_state, reward)
+
+        # (e) Perform simulated Q-learning backups using the learned model.
+        q_table = planning_updates(
+            q_table, model, n_planning, alpha, gamma, rng
+        )
+
+        # Move to the next state and count the real environment step.
+        state = next_state
+        n_steps += 1
+
+    # Return the updated Q-table, copied model, and real episode length.
+    return q_table, model, n_steps
 
 # Step 7 - greedy_path_length (not yet solved)
 # TODO: implement
