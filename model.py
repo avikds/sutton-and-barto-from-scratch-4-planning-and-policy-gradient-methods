@@ -444,8 +444,25 @@ def prioritized_sweeping_episode(maze, q_table, model, n_planning, theta, alpha,
     # Return the learned Q-table, copied model, real steps, and planning updates.
     return q_table, model, n_steps, n_updates
 
-# Step 13 - corridor_step (not yet solved)
-# TODO: implement
+# Step 13 - corridor_step
+def corridor_step(state, action):
+    # Reverse the action in state 1, as specified in Sutton and Barto's Example 13.1.
+    if state == 1:
+        action = 1 - action
+
+    # Action 0 moves left; action 1 moves right.
+    if action == 0:
+        # Moving left from state 0 leaves the agent in state 0.
+        next_state = max(0, state - 1)
+    else:
+        # Moving right advances one state, including to terminal state 3.
+        next_state = state + 1
+
+    # Every transition incurs a reward of -1.0.
+    reward = -1.0
+    done = next_state == 3
+
+    return next_state, reward, done
 
 # Step 14 - corridor_policy (not yet solved)
 # TODO: implement

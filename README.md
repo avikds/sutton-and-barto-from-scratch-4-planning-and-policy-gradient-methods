@@ -22,7 +22,7 @@ python scaffold.py
 - [x] **10.** run_blocking_maze
 - [x] **11.** push_priority
 - [x] **12.** prioritized_sweeping_episode
-- [ ] **13.** corridor_step
+- [x] **13.** corridor_step
 - [ ] **14.** corridor_policy
 - [ ] **15.** corridor_true_value
 - [ ] **16.** reinforce_episode
