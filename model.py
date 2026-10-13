@@ -588,8 +588,55 @@ def reinforce_baseline_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_s
     total_reward = float(sum(rewards))
     return theta, float(w), total_reward
 
-# Step 18 - actor_critic_corridor_episode (not yet solved)
-# TODO: implement
+# Step 18 - actor_critic_corridor_episode
+def actor_critic_corridor_episode(theta, w, alpha_theta, alpha_w, gamma, rng, max_steps=10000):
+    # Copy the actor and critic parameters so the input arrays remain unchanged.
+    theta = theta.copy()
+    w = w.copy()
+
+    # Start at the initial corridor state.
+    state = 0
+    discount = 1.0
+    total_reward = 0.0
+    done = False
+    n_steps = 0
+
+    # Run one episode, subject to the safety limit.
+    while not done and n_steps < max_steps:
+        # Select an action using the actor's softmax policy.
+        probs = corridor_policy(theta)
+        action = int(rng.choice(2, p=probs))
+
+        # Execute one transition in the corridor.
+        next_state, reward, done = corridor_step(state, action)
+
+        # The terminal state's value is zero.
+        next_value = 0.0 if done else w[next_state]
+
+        # Compute the one-step TD error.
+        delta = reward + gamma * next_value - w[state]
+
+        # Update the critic for the current state.
+        w[state] += alpha_w * delta
+
+        # Compute the policy-gradient score using the sampled policy.
+        grad = np.zeros(2, dtype=float)
+        grad[action] = 1.0
+        grad -= probs
+
+        # Update the actor, weighting the gradient by the accumulated discount.
+        theta += alpha_theta * discount * delta * grad
+
+        # Update the accumulated discount and episode statistics.
+        discount *= gamma
+        total_reward += reward
+        n_steps += 1
+
+        # Advance to the next state.
+        state = next_state
+
+    # Return the updated actor, critic, and undiscounted episode reward.
+    return theta, w, float(total_reward)
 
 # Step 19 - access_control_step (not yet solved)
 # TODO: implement
