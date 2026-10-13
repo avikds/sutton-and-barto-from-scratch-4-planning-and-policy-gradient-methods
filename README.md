@@ -11,7 +11,7 @@ python scaffold.py
 ## Steps
 
 - [x] **1.** build_maze
-- [ ] **2.** maze_step
+- [x] **2.** maze_step
 - [ ] **3.** epsilon_greedy_tabular
 - [ ] **4.** q_learning_update
 - [ ] **5.** planning_updates

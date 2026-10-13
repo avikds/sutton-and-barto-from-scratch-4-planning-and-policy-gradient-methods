@@ -33,8 +33,41 @@ def build_maze(walls=None, start=(2, 0), goal=(0, 8), rows=6, cols=9):
         'n_actions': 4,  # 0=up, 1=right, 2=down, 3=left
     }
 
-# Step 2 - maze_step (not yet solved)
-# TODO: implement
+# Step 2 - maze_step
+def maze_step(maze, state, action):
+    # Define the movement directions:
+    # 0 = up, 1 = right, 2 = down, 3 = left.
+    directions = {
+        0: (-1, 0),
+        1: (0, 1),
+        2: (1, 0),
+        3: (0, -1),
+    }
+
+    # Calculate the target cell for the chosen action.
+    row, col = state
+    dr, dc = directions[action]
+    target = (row + dr, col + dc)
+
+    # Check whether the target is outside the maze boundaries
+    # or blocked by a wall. If so, the agent stays in place.
+    if (
+        target[0] < 0
+        or target[0] >= maze['rows']
+        or target[1] < 0
+        or target[1] >= maze['cols']
+        or target in maze['walls']
+    ):
+        next_state = state
+    else:
+        next_state = target
+
+    # The agent receives a reward of 1.0 at the goal and 0.0 otherwise.
+    done = next_state == maze['goal']
+    reward = 1.0 if done else 0.0
+
+    # Return the next state, reward, and terminal status.
+    return next_state, reward, done
 
 # Step 3 - epsilon_greedy_tabular (not yet solved)
 # TODO: implement
