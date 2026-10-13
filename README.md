@@ -31,7 +31,7 @@ python scaffold.py
 - [x] **19.** access_control_step
 - [x] **20.** differential_sarsa_update
 - [x] **21.** run_access_control
-- [ ] **22.** access_control_policy_table
+- [x] **22.** access_control_policy_table
 
 ---
 

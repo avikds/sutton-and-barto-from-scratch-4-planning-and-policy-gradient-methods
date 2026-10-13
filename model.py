@@ -739,6 +739,21 @@ def run_access_control(n_steps, alpha, beta, epsilon, rng, n_servers=10, free_pr
 
     return q_table, float(avg_reward)
 
-# Step 22 - access_control_policy_table (not yet solved)
-# TODO: implement
+# Step 22 - access_control_policy_table
+def access_control_policy_table(q_table):
+    # Determine the number of free-server states and customer priorities.
+    n_free, n_prio, _ = q_table.shape
+
+    # Build the greedy policy:
+    # accept (1) only when Q(free, prio, accept) > Q(free, prio, reject).
+    # Transpose so rows represent priorities and columns represent free servers.
+    policy_table = (
+        q_table[:, :, 1] > q_table[:, :, 0]
+    ).T.astype(int)
+
+    # Force rejection when no servers are free.
+    # Ties are already treated as rejections by the strict comparison.
+    policy_table[:, 0] = 0
+
+    return policy_table
 
